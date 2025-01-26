@@ -45,3 +45,17 @@ Port: 5432
 Database: postgres
 User: postgres
 Password: yourpassword
+
+-- Список таблиц
+SELECT table_name 
+FROM information_schema.tables 
+WHERE table_schema = 'public';
+
+-- Удалить таблицу
+DROP TABLE IF EXISTS users;
+
+-- Удалить несколько таблиц
+DROP TABLE IF EXISTS users, tasks CASCADE;
+
+-- Структуру таблицы
+\d+ table_name
