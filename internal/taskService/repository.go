@@ -17,6 +17,7 @@ type TaskRepository interface {
 	UpdateTaskByID(id uint, task Task) (Task, error)
 	// DeleteTaskByID - Передаем id для удаления, возвращаем только ошибку
 	DeleteTaskByID(id uint) error
+	GetTasksByUserID(userID uint) ([]Task, error)
 }
 
 type taskRepository struct {
@@ -99,4 +100,14 @@ func (r *taskRepository) DeleteTaskByID(id uint) error {
 
 	// Возвращаем nil, указывая на отсутствие ошибки
 	return nil
+}
+
+// GetTasksByUserID получает все задачи пользователя по его ID
+func (r *taskRepository) GetTasksByUserID(userID uint) ([]Task, error) {
+	var tasks []Task
+	result := r.db.Where("user_id = ?", userID).Find(&tasks)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return tasks, nil
 }

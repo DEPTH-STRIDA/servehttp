@@ -71,8 +71,9 @@ func (h *TaskHandler) PatchTasksId(_ context.Context, request tasks.PatchTasksId
 	// Создаём объект ответа с обновлённой задачей
 	responseTask := tasks.Task{
 		Id:     &updatedTask.ID,
-		Task:   &updatedTask.Task,
-		IsDone: &updatedTask.IsDone,
+		Task:   updatedTask.Task,
+		IsDone: updatedTask.IsDone,
+		UserId: updatedTask.UserID,
 	}
 
 	// Возвращаем 200 OK с обновлённой задачей
@@ -94,8 +95,9 @@ func (h *TaskHandler) GetTasks(_ context.Context, _ tasks.GetTasksRequestObject)
 	for _, tsk := range allTasks {
 		task := tasks.Task{
 			Id:     &tsk.ID,
-			Task:   &tsk.Task,
-			IsDone: &tsk.IsDone,
+			Task:   tsk.Task,
+			IsDone: tsk.IsDone,
+			UserId: tsk.UserID,
 		}
 		response = append(response, task)
 	}
@@ -105,24 +107,48 @@ func (h *TaskHandler) GetTasks(_ context.Context, _ tasks.GetTasksRequestObject)
 }
 
 func (h *TaskHandler) PostTasks(_ context.Context, request tasks.PostTasksRequestObject) (tasks.PostTasksResponseObject, error) {
-	// Распаковываем тело запроса напрямую, без декодера!
 	taskRequest := request.Body
-	// Обращаемся к сервису и создаем задачу
 	taskToCreate := taskService.Task{
-		Task:   *taskRequest.Task,
-		IsDone: *taskRequest.IsDone,
+		Task:   taskRequest.Task,
+		IsDone: taskRequest.IsDone,
+		UserID: taskRequest.UserId,
 	}
 	createdTask, err := h.Service.CreateTask(taskToCreate)
 
 	if err != nil {
 		return nil, err
 	}
-	// создаем структуру респонс
+
 	response := tasks.PostTasks201JSONResponse{
 		Id:     &createdTask.ID,
-		Task:   &createdTask.Task,
-		IsDone: &createdTask.IsDone,
+		Task:   createdTask.Task,
+		IsDone: createdTask.IsDone,
+		UserId: createdTask.UserID,
 	}
-	// Просто возвращаем респонс!
 	return response, nil
+}
+
+// GetUsersTasks реализует получение задач пользователя
+func (h *TaskHandler) GetUsersTasks(_ context.Context, request tasks.GetUsersIdTasksRequestObject) (tasks.GetUsersIdTasksResponseObject, error) {
+	userTasks, err := h.Service.GetTasksByUserID(request.Id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user tasks: %w", err)
+	}
+
+	response := tasks.GetUsersIdTasks200JSONResponse{}
+	for _, tsk := range userTasks {
+		task := tasks.Task{
+			Id:     &tsk.ID,
+			Task:   tsk.Task,
+			IsDone: tsk.IsDone,
+			UserId: tsk.UserID,
+		}
+		response = append(response, task)
+	}
+
+	return response, nil
+}
+
+func (h *TaskHandler) GetUsersIdTasks(ctx context.Context, request tasks.GetUsersIdTasksRequestObject) (tasks.GetUsersIdTasksResponseObject, error) {
+	return h.GetUsersTasks(ctx, request)
 }
