@@ -1,8 +1,8 @@
 # Makefile для создания миграций
 
 # Переменные которые будут использоваться в наших командах (Таргетах)
-# Строка подключения к БД
-DB_DSN := "postgres://postgres:yourpassword@localhost:5432/main?sslmode=disable"
+# Строка подключения к БД (используем имя сервиса из docker-compose)
+DB_DSN := "postgres://postgres:yourpassword@db-serve-http:5432/postgres?sslmode=disable"
 # Команда для работы с миграциями
 # Утилитиа путь к миграциям и строка подключения к БД
 MIGRATE := migrate -path ./migrations -database $(DB_DSN)

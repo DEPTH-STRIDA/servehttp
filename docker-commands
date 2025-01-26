@@ -1,0 +1,47 @@
+# Собрать и запустить контейнеры в фоновом режиме
+docker-compose up -d
+
+# Зайти в контейнер с приложением
+docker-compose exec app-serve-http bash
+
+# Теперь внутри контейнера можно выполнять make команды:
+# Создать новую миграцию
+make migrate-new NAME=create_users_table 
+ # Применить миграции 
+make migrate         
+ # Сгенерировать код из openapi.yaml                   
+make gen                
+ # Запустить приложение              
+make run                               
+
+#Или можно выполнять команды напрямую из хост-системы:
+# Выполнить команду make migrate в контейнере
+docker-compose exec servehttp-app-serve-http make migrate
+
+# Выполнить генерацию кода
+docker-compose exec app-serve-http make gen
+
+# Запустить приложение
+docker-compose exec app-serve-http make run
+
+# Посмотреть логи
+docker-compose logs -f
+
+# Остановить контейнеры
+docker-compose down
+
+# Пересобрать и перезапустить контейнеры
+docker-compose up -d --build
+
+# Посмотреть статус контейнеров
+docker-compose ps
+
+# 1. Через psql в контейнере базы данных:
+docker-compose exec db-serve-http psql -U postgres
+
+# 2. Через любой SQL-клиент (например, DBeaver, pgAdmin) используя:
+Host: localhost
+Port: 5432
+Database: postgres
+User: postgres
+Password: yourpassword

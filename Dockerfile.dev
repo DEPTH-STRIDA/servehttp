@@ -1,0 +1,14 @@
+FROM golang:1.22
+
+WORKDIR /app
+
+# Установка необходимых утилит с фиксированными версиями
+RUN go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@v1.16.3 && \
+    go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@v4.17.0 && \
+    go install github.com/swaggo/swag/cmd/swag@v1.16.3
+
+# Копируем исходники
+COPY . .
+
+# Установка зависимостей
+RUN go mod download 
