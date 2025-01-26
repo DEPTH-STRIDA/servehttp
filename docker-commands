@@ -12,7 +12,9 @@ make migrate
  # Сгенерировать код из openapi.yaml                   
 make gen                
  # Запустить приложение              
-make run                               
+make run                  
+
+
 
 #Или можно выполнять команды напрямую из хост-системы:
 # Выполнить команду make migrate в контейнере
@@ -56,6 +58,11 @@ DROP TABLE IF EXISTS users;
 
 -- Удалить несколько таблиц
 DROP TABLE IF EXISTS users, tasks CASCADE;
+
+docker-compose exec app-serve-http make migrate-down
+
+# Применить миграции
+docker-compose exec app-serve-http make migrate
 
 -- Структуру таблицы
 \d+ table_name

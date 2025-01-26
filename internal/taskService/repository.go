@@ -2,6 +2,7 @@ package taskService
 
 import (
 	"errors"
+
 	"gorm.io/gorm"
 )
 
@@ -24,13 +25,6 @@ type taskRepository struct {
 
 func NewTaskRepository(db *gorm.DB) *taskRepository {
 	return &taskRepository{db: db}
-}
-
-// Task представляет структуру задачи
-type Task struct {
-	ID     uint   `json:"id"`
-	Task   string `json:"task"`
-	IsDone bool   `json:"is_done"`
 }
 
 // (r *taskRepository) привязывает данную функцию к нашему репозиторию

@@ -6,11 +6,11 @@
 + 3. Добавить описание 4 ручек в openapi.yaml - GetUsers (выводит всех пользователей), PostUser (создать нового пользователя) PatchUserByID (Отредактировать поля user по его ID) и DeleteUserByID
 + 4. Добавить строку для генерации тега users в makefile, сгенерировать
 + 5. В handlers создать userHandlers.go и реализовать все 4 ручки
-6. Обновить main.go, переименовать текущие repo, service и handlers на tasksRepo, TasksService итд, добавить userRepo, userService, UserHandlers
++6. Обновить main.go, переименовать текущие repo, service и handlers на tasksRepo, TasksService итд, добавить userRepo, userService, UserHandlers
 
 создать связь между пользователем и задачами. Для этого вам нужно будет:
 
-1. Создать альтер миграцию для `tasks`, добавив связь с таблицей users.
++ 1. Создать альтер миграцию для `tasks`, добавив связь с таблицей users.
     - Добавьте поле user_id, связанное с ID пользователя, который владеет задачей.
     - Убедитесь, что поле ссылается на id в таблице users с каскадным удалением.
         
@@ -21,7 +21,7 @@
         ON DELETE CASCADE;
         
         
-2. Обновить структуру моделей:
++ 2. Обновить структуру моделей:
     - В модели User добавьте массив задач Tasks []Task
     - В модели Task добавьте UserID uint для связи задачи с её владельцем.
 3. Обновить `openapi.yaml`:
