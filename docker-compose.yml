@@ -22,6 +22,8 @@ services:
       - DB_PASSWORD=yourpassword
       - DB_NAME=postgres
       - DB_PORT=5432
+    ports:
+      - "8080:8080"  # Пробрасываем порт 8080
 
   db-serve-http:
     image: postgres:15
