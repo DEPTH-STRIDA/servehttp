@@ -1,29 +1,30 @@
-package userService
+package service
 
 import (
-	"pet1/internal/taskService"
+	"pet1/internal/model"
+	"pet1/internal/repo"
 )
 
 type UserService struct {
-	repo UserRepository
+	repo repo.UserRepository
 }
 
-func NewService(repo UserRepository) *UserService {
+func NewUserService(repo repo.UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
 // CreateUser создает нового пользователя
-func (s *UserService) CreateUser(user User) (User, error) {
+func (s *UserService) CreateUser(user model.User) (model.User, error) {
 	return s.repo.CreateUser(user)
 }
 
 // GetAllUsers возвращает всех пользователей
-func (s *UserService) GetAllUsers() ([]User, error) {
+func (s *UserService) GetAllUsers() ([]model.User, error) {
 	return s.repo.GetAllUsers()
 }
 
 // UpdateUserByID обновляет пользователя по ID
-func (s *UserService) UpdateUserByID(id uint, user User) (User, error) {
+func (s *UserService) UpdateUserByID(id uint, user model.User) (model.User, error) {
 	return s.repo.UpdateUserByID(id, user)
 }
 
@@ -33,7 +34,7 @@ func (s *UserService) DeleteUserByID(id uint) error {
 }
 
 // GetTasksForUser получает все задачи пользователя
-func (s *UserService) GetTasksForUser(userID uint) ([]taskService.Task, error) {
+func (s *UserService) GetTasksForUser(userID uint) ([]model.Task, error) {
 	user, err := s.repo.GetUserByID(userID)
 	if err != nil {
 		return nil, err

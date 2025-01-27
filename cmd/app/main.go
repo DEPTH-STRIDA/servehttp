@@ -2,12 +2,12 @@ package main
 
 import (
 	"log"
+	"pet1/internal/api/handlers"
+	"pet1/internal/api/web/tasks"
+	"pet1/internal/api/web/users"
 	"pet1/internal/db"
-	"pet1/internal/handlers"
-	"pet1/internal/taskService"
-	"pet1/internal/userService"
-	"pet1/internal/web/tasks"
-	"pet1/internal/web/users"
+	"pet1/internal/repo/orm"
+	"pet1/internal/service"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -18,13 +18,13 @@ func main() {
 	db.InitDB()
 
 	// Инициализация сервисов задач
-	tasksRepo := taskService.NewTaskRepository(db.DB)
-	tasksService := taskService.NewService(tasksRepo)
+	tasksRepo := orm.NewTaskRepository(db.DB)
+	tasksService := service.NewTaskService(tasksRepo)
 	tasksHandler := handlers.NewTaskHandler(tasksService)
 
 	// Инициализация сервисов пользователей
-	usersRepo := userService.NewUserRepository(db.DB)
-	usersService := userService.NewService(usersRepo)
+	usersRepo := orm.NewUserRepository(db.DB)
+	usersService := service.NewUserService(usersRepo)
 	usersHandler := handlers.NewUserHandler(usersService)
 
 	// Инициализируем echo

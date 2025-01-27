@@ -3,17 +3,18 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"pet1/internal/taskService"
-	"pet1/internal/web/tasks"
+	"pet1/internal/api/web/tasks"
+	"pet1/internal/model"
+	"pet1/internal/service"
 )
 
 // TaskHandler переименовываем для ясности
 type TaskHandler struct {
-	Service *taskService.TaskService
+	Service *service.TaskService
 }
 
 // NewTaskHandler переименовываем конструктор
-func NewTaskHandler(service *taskService.TaskService) *TaskHandler {
+func NewTaskHandler(service *service.TaskService) *TaskHandler {
 	return &TaskHandler{
 		Service: service,
 	}
@@ -47,7 +48,7 @@ func (h *TaskHandler) PatchTasksId(_ context.Context, request tasks.PatchTasksId
 	body := request.Body
 
 	// Создаём объект задачи с обновлёнными полями
-	taskToUpdate := taskService.Task{}
+	taskToUpdate := model.Task{}
 
 	if body.Task != nil {
 		taskToUpdate.Task = *body.Task
@@ -108,7 +109,7 @@ func (h *TaskHandler) GetTasks(_ context.Context, _ tasks.GetTasksRequestObject)
 
 func (h *TaskHandler) PostTasks(_ context.Context, request tasks.PostTasksRequestObject) (tasks.PostTasksResponseObject, error) {
 	taskRequest := request.Body
-	taskToCreate := taskService.Task{
+	taskToCreate := model.Task{
 		Task:   taskRequest.Task,
 		IsDone: taskRequest.IsDone,
 		UserID: taskRequest.UserId,

@@ -1,18 +1,11 @@
-package userService
+package orm
 
 import (
 	"errors"
+	"pet1/internal/model"
 
 	"gorm.io/gorm"
 )
-
-type UserRepository interface {
-	CreateUser(user User) (User, error)
-	GetAllUsers() ([]User, error)
-	GetUserByID(id uint) (User, error)
-	UpdateUserByID(id uint, user User) (User, error)
-	DeleteUserByID(id uint) error
-}
 
 type userRepository struct {
 	db *gorm.DB
@@ -22,40 +15,40 @@ func NewUserRepository(db *gorm.DB) *userRepository {
 	return &userRepository{db: db}
 }
 
-func (r *userRepository) CreateUser(user User) (User, error) {
+func (r *userRepository) CreateUser(user model.User) (model.User, error) {
 	result := r.db.Create(&user)
 	if result.Error != nil {
-		return User{}, result.Error
+		return model.User{}, result.Error
 	}
 	return user, nil
 }
 
-func (r *userRepository) GetAllUsers() ([]User, error) {
-	var users []User
+func (r *userRepository) GetAllUsers() ([]model.User, error) {
+	var users []model.User
 	err := r.db.Find(&users).Error
 	return users, err
 }
 
-func (r *userRepository) GetUserByID(id uint) (User, error) {
-	var user User
+func (r *userRepository) GetUserByID(id uint) (model.User, error) {
+	var user model.User
 	result := r.db.Preload("Tasks").First(&user, id)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return User{}, errors.New("user not found")
+			return model.User{}, errors.New("user not found")
 		}
-		return User{}, result.Error
+		return model.User{}, result.Error
 	}
 	return user, nil
 }
 
-func (r *userRepository) UpdateUserByID(id uint, user User) (User, error) {
-	var existingUser User
+func (r *userRepository) UpdateUserByID(id uint, user model.User) (model.User, error) {
+	var existingUser model.User
 	result := r.db.First(&existingUser, id)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return User{}, errors.New("user not found")
+			return model.User{}, errors.New("user not found")
 		}
-		return User{}, result.Error
+		return model.User{}, result.Error
 	}
 
 	if user.Email != "" {
@@ -67,14 +60,14 @@ func (r *userRepository) UpdateUserByID(id uint, user User) (User, error) {
 
 	saveResult := r.db.Save(&existingUser)
 	if saveResult.Error != nil {
-		return User{}, saveResult.Error
+		return model.User{}, saveResult.Error
 	}
 
 	return existingUser, nil
 }
 
 func (r *userRepository) DeleteUserByID(id uint) error {
-	var user User
+	var user model.User
 	result := r.db.First(&user, id)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {

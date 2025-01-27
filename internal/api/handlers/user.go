@@ -3,16 +3,17 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"pet1/internal/userService"
-	"pet1/internal/web/users"
+	"pet1/internal/api/web/users"
+	"pet1/internal/model"
+	"pet1/internal/service"
 )
 
 // UserHandler структура для обработки запросов пользователей
 type UserHandler struct {
-	Service *userService.UserService
+	Service *service.UserService
 }
 
-func NewUserHandler(service *userService.UserService) *UserHandler {
+func NewUserHandler(service *service.UserService) *UserHandler {
 	return &UserHandler{
 		Service: service,
 	}
@@ -43,7 +44,7 @@ func (h *UserHandler) GetUsers(_ context.Context, _ users.GetUsersRequestObject)
 // PostUsers реализует создание нового пользователя
 func (h *UserHandler) PostUsers(_ context.Context, request users.PostUsersRequestObject) (users.PostUsersResponseObject, error) {
 	userRequest := request.Body
-	userToCreate := userService.User{
+	userToCreate := model.User{
 		Email:    *userRequest.Email,
 		Password: *userRequest.Password,
 	}
@@ -84,7 +85,7 @@ func (h *UserHandler) PatchUsersId(_ context.Context, request users.PatchUsersId
 	id := request.Id
 	body := request.Body
 
-	userToUpdate := userService.User{}
+	userToUpdate := model.User{}
 
 	if body.Email != nil {
 		userToUpdate.Email = *body.Email
