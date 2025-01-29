@@ -139,11 +139,13 @@ func (h *TaskHandler) GetUsersTasks(_ context.Context, request tasks.GetUsersIdT
 	response := tasks.GetUsersIdTasks200JSONResponse{}
 	for _, tsk := range userTasks {
 		task := tasks.Task{
-			Id:     &tsk.ID,
+
+			Id:     nil,
 			Task:   tsk.Task,
 			IsDone: tsk.IsDone,
-			UserId: tsk.UserID,
+			UserId: 0,
 		}
+
 		response = append(response, task)
 	}
 
